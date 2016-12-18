@@ -7,6 +7,7 @@ Vue.use(Vuex)
 // and then export the Vuex store for use by our components
 export default new Vuex.Store({
     state: {
+        user: null,
         notes: [],
         activeNote: {}
     },
@@ -43,6 +44,10 @@ export default new Vuex.Store({
 
         SET_ACTIVE_NOTE(state, note){
             state.activeNote = note
+        },
+
+        SET_USER(state, user){
+            state.user = user
         }
     },
     actions: {
@@ -60,11 +65,16 @@ export default new Vuex.Store({
         },
         setActiveNote({commit}, note){
             commit("SET_ACTIVE_NOTE", note)
+        },
+        setUser({commit}, user){
+            commit("SET_USER", user)
         }
     },
     getters: {
         activeNote: state => state.activeNote,
         activeNoteText: state => state.activeNote.text,
-        notes: state => state.notes
+        notes: state => state.notes,
+        user: state => state.user,
+        userLoggedIn: state => !!state.user
     }
 })
