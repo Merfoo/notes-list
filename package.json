@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "firebase": "^3.6.4",
+    "firebaseui": "^1.0.0",
     "vue": "^2.1.6",
     "vuex": "^2.1.1"
   }
