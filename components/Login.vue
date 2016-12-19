@@ -9,14 +9,6 @@ import firebaseui  from "firebaseui"
 
 export default {
     mounted: function(){
-        // Initialize Firebase
-        let firebaseConfig = {
-            apiKey: "AIzaSyCgK0wWrDY-SqJb-kejw1iF_gzgrhSgvcw",
-            authDomain: "fir-7fe85.firebaseapp.com",
-            databaseURL: "https://fir-7fe85.firebaseio.com",
-        };
-        firebase.initializeApp(firebaseConfig);
-
         let uiConfig = {
             "callbacks": {
                 "signInSuccess": (currUser, cred, redirectUrl) => {
@@ -55,6 +47,19 @@ export default {
                 
                 console.log("Signed in!");
                 this.$store.dispatch("setUser", newUser);
+
+                firebase.database().ref("user-notes/" + newUser.uid + "/").once("value").then((snapshot) => {
+                    let notes = []
+                    let noteObjs = snapshot.val()
+
+                    for(let noteKey in noteObjs){
+                        if(noteObjs.hasOwnProperty(noteKey)){
+                            notes.push(noteObjs[noteKey])
+                        }
+                    }
+
+                    this.$store.dispatch("setNotes", notes)
+                })
             }
 
             else if(newUser === null && user){
