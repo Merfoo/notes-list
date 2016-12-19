@@ -6,7 +6,7 @@
                 <!-- all notes button -->
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-default"
-                        @click="show = 'all'"
+                        @click="selectAllNotes()"
                         :class="{active: show === 'all'}">
                         All Notes
                     </button>
@@ -14,7 +14,7 @@
                 <!-- favorites button -->
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-default"
-                        @click="show = 'favorites'"
+                        @click="selectFavoritedNotes()"
                         :class="{active: show === 'favorites'}">
                         Favorites
                     </button>
@@ -45,24 +45,32 @@ export default {
         }
     },
     methods: {
+        updateActiveNote(note){
+            this.$store.dispatch("setActiveNote", note)
+        },
+        selectAllNotes(){
+            this.show = "all"
+            this.updateActiveNote(this.notes.length > 0 ? this.notes[0] : {})
+        },
+        selectFavoritedNotes(){
+            this.show = "favorites"
+            this.updateActiveNote(this.notes.length > 0 ? this.notes[0] : {})
+        }
+    },
+    computed: {
         notes(){
             return this.$store.getters.notes
         },
         activeNote(){
             return this.$store.getters.activeNote
         },
-        updateActiveNote(note){
-            this.$store.dispatch("setActiveNote", note)
-        }
-    },
-    computed: {
         filteredNotes(){
             if(this.show === "all"){
-                return this.notes()
+                return this.notes
             }
             
             else if(this.show === "favorites"){
-                return this.notes().filter(note => note.favorite)
+                return this.notes.filter(note => note.favorite)
             }
         }
     }
