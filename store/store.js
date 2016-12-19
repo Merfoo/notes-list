@@ -1,7 +1,17 @@
 import Vue from "vue"
 import Vuex from "vuex"
+import firebase from "firebase"
 
 Vue.use(Vuex)
+
+// Initialize Firebase
+let firebaseConfig = {
+    apiKey: "AIzaSyCgK0wWrDY-SqJb-kejw1iF_gzgrhSgvcw",
+    authDomain: "fir-7fe85.firebaseapp.com",
+    databaseURL: "https://fir-7fe85.firebaseio.com",
+};
+firebase.initializeApp(firebaseConfig);
+let database = firebase.database()
 
 // create the Vuex instance by creating state, mutations, actions, getters
 // and then export the Vuex store for use by our components
@@ -14,32 +24,39 @@ export default new Vuex.Store({
     mutations: {
         ADD_NOTE(state){
             const newNote = {
+                key: null,
                 text: "New note",
                 favorite: false
             }
 
             state.notes.push(newNote)
             state.activeNote = newNote
+
+            let noteKey = database.ref("user-notes/" + state.user.uid + "/").push().key
+            newNote.key = noteKey
+            database.ref("user-notes/" + state.user.uid + "/" + noteKey).update(newNote)
         },
 
         EDIT_NOTE(state, text){
             state.activeNote.text = text
+            database.ref("user-notes/" + state.user.uid + "/" + state.activeNote.key).update(state.activeNote)
         },
 
         DELETE_NOTE(state){
-            if(state.notes.length > 1){
+            if(state.notes.length > 0){
                 let index = state.notes.indexOf(state.activeNote)
                 state.notes.splice(index, 1)
-                state.activeNote = state.notes[0]
+                database.ref("user-notes/" + state.user.uid + "/" + state.activeNote.key).remove()
             }
-            else{
-                state.activeNote.text = "New note"
-                state.activeNote.favorite = false
-            }
+            
+            state.activeNote = state.notes.length > 0 ? state.notes[0] : {}
         },
 
         TOGGLE_FAVORITE(state){
-            state.activeNote.favorite = !state.activeNote.favorite
+            if(state.notes.length > 0){
+                state.activeNote.favorite = !state.activeNote.favorite
+                database.ref("user-notes/" + state.user.uid + "/" + state.activeNote.key).update(state.activeNote)
+            }
         },
 
         SET_ACTIVE_NOTE(state, note){
@@ -48,6 +65,14 @@ export default new Vuex.Store({
 
         SET_USER(state, user){
             state.user = user
+        },
+
+        SET_NOTES(state, notes){
+            state.notes = notes
+
+            if(state.notes.length > 0){
+                state.activeNote = state.notes[0]
+            }
         }
     },
     actions: {
@@ -68,6 +93,9 @@ export default new Vuex.Store({
         },
         setUser({commit}, user){
             commit("SET_USER", user)
+        },
+        setNotes({commit}, notes){
+            commit("SET_NOTES", notes)
         }
     },
     getters: {
