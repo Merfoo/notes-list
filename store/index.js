@@ -1,17 +1,8 @@
 import Vue from "vue"
 import Vuex from "vuex"
-import firebase from "firebase"
+import { database } from "../firebase/index"
 
 Vue.use(Vuex)
-
-// Initialize Firebase
-let firebaseConfig = {
-    apiKey: "AIzaSyCgK0wWrDY-SqJb-kejw1iF_gzgrhSgvcw",
-    authDomain: "fir-7fe85.firebaseapp.com",
-    databaseURL: "https://fir-7fe85.firebaseio.com",
-};
-firebase.initializeApp(firebaseConfig);
-let database = firebase.database()
 
 // create the Vuex instance by creating state, mutations, actions, getters
 // and then export the Vuex store for use by our components
@@ -104,6 +95,20 @@ export default new Vuex.Store({
         },
         setAuthHandlerAttached({commit}, attached){
             commit("SET_AUTH_HANDLER_ATTACHED", attached)
+        },
+        initNotesFromUser({commit}, userId){
+            database.ref("user-notes/" + userId + "/").once("value").then((snapshot) => {
+                let notes = []
+                let noteObjs = snapshot.val()
+
+                for(let noteKey in noteObjs){
+                    if(noteObjs.hasOwnProperty(noteKey)){
+                        notes.push(noteObjs[noteKey])
+                    }
+                }
+
+                commit("SET_NOTES", notes)
+            })
         }
     },
     getters: {

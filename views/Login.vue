@@ -4,10 +4,7 @@
 </template>
 
 <script>
-import firebase from "firebase"
-import firebaseui  from "firebaseui"
-
-let ui = new firebaseui.auth.AuthUI(firebase.auth());
+import { firebase, ui } from "../firebase/index"
 
 export default {
     mounted: function(){
