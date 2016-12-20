@@ -1,6 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Raleway:400,300);
 
-html, #app, #home {
+html, #app, #home, #firebaseui-auth-container {
   height: 100%;
 }
 
