@@ -1,9 +1,11 @@
 import Vue from "vue"
-import App from "./components/App.vue"
-import store from "./store/store"
+import { sync } from "vuex-router-sync"
+import store from "./store/index"
+import { router } from "./router/index"
+
+sync(store, router)
 
 new Vue({
-    el: "#app",
-    store, // inject store to all children
-    render: h => h(App)
-})
+    store,
+    router
+}).$mount("#app")
