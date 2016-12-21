@@ -10,8 +10,7 @@ export default new Vuex.Store({
     state: {
         user: null,
         notes: [],
-        activeNote: {},
-        authHandlerAttached: false
+        activeNote: {}
     },
     mutations: {
         ADD_NOTE(state){
@@ -65,10 +64,6 @@ export default new Vuex.Store({
             if(state.notes.length > 0){
                 state.activeNote = state.notes[0]
             }
-        },
-
-        SET_AUTH_HANDLER_ATTACHED(state, attached){
-            state.authHandlerAttached = attached
         }
     },
     actions: {
@@ -93,9 +88,6 @@ export default new Vuex.Store({
         setNotes({commit}, notes){
             commit("SET_NOTES", notes)
         },
-        setAuthHandlerAttached({commit}, attached){
-            commit("SET_AUTH_HANDLER_ATTACHED", attached)
-        },
         initNotesFromUser({commit}, userId){
             database.ref("user-notes/" + userId + "/").once("value").then((snapshot) => {
                 let notes = []
@@ -116,7 +108,6 @@ export default new Vuex.Store({
         activeNoteText: state => state.activeNote.text,
         notes: state => state.notes,
         user: state => state.user,
-        userLoggedIn: state => !!state.user,
-        authHandlerAttached: state => state.authHandlerAttached
+        userLoggedIn: state => !!state.user
     }
 })

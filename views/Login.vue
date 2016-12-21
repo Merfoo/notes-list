@@ -18,7 +18,7 @@ export default {
             ],
             "signInSuccessUrl": "http://localhost:8080/#/home",
             "tosUrl": "www.google.com"
-        };
+        }
 
         ui.start("#firebaseui-auth-container", uiConfig);
     }
