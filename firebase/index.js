@@ -18,7 +18,7 @@ let database = firebase.database()
 
 // firebase auth handler
 let attachAuthHandler = function(store, router) {
-    return new Promise(function(resolve, error) {
+    return new Promise(function(resolve, reject) {
         let attached = false
 
         firebase.auth().onAuthStateChanged((newUser) => {
@@ -58,7 +58,7 @@ let attachAuthHandler = function(store, router) {
 
         setTimeout(() => {
             if(!attached){
-                reject()
+                reject(Error("Attachement of firebase auth failed!"))
             }
         }, 1000 * 60)
     })
